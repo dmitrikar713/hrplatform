@@ -1,8 +1,15 @@
 'use client'
 
-import { Flowbite } from 'flowbite-react'
+import { MantineProvider } from '@mantine/core'
+import { Notifications } from '@mantine/notifications'
+import '@mantine/core/styles.css'
+import '@mantine/notifications/styles.css'
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  return <Flowbite>{children}</Flowbite>
+  return (
+    <MantineProvider>
+      <Notifications />
+      {children}
+    </MantineProvider>
+  )
 }
-

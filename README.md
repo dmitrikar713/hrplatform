@@ -2,7 +2,7 @@
 
 A monorepo project built with Turborepo, featuring:
 - **Backend**: NestJS with Prisma ORM
-- **Frontend**: React TypeScript with Flowbite UI
+- **Frontend**: React TypeScript with Mantine UI
 
 ## Getting Started
 
@@ -138,7 +138,7 @@ pnpm exec prisma studio
 │   │   ├── src/         # Source code
 │   │   ├── prisma/      # Prisma schema and migrations
 │   │   └── package.json
-│   └── frontend         # React TypeScript + Flowbite frontend
+│   └── frontend         # React TypeScript + Mantine frontend
 │       ├── src/         # Source code
 │       └── package.json
 ├── packages              # Shared packages (if any)
@@ -157,6 +157,6 @@ pnpm exec prisma studio
 - **Next.js 14**: React framework with App Router
 - **React 18**: UI library
 - **TypeScript**: Type-safe JavaScript
-- **Flowbite**: Tailwind CSS component library
+- **Mantine**: React components library
 - **Tailwind CSS**: Utility-first CSS framework
 

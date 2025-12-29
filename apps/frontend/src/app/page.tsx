@@ -1,60 +1,104 @@
 'use client'
 
-import { useState } from 'react'
-import { Button, Card, Alert } from 'flowbite-react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { Button, Card, Alert, Title, Text, Stack, List } from '@mantine/core'
+import { notifications } from '@mantine/notifications'
+import { useAuthStore } from '@/store/authStore'
+import { AuthGuard } from '@/components/AuthGuard'
 
 export default function Home() {
+  const router = useRouter()
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
+  const initialize = useAuthStore((state) => state.initialize)
   const [healthStatus, setHealthStatus] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    initialize()
+  }, [initialize])
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push('/sign-in')
+    }
+  }, [isAuthenticated, router])
+
+  if (!isAuthenticated) {
+    return null
+  }
 
   const checkBackend = async () => {
     setLoading(true)
     try {
-      const response = await fetch('http://localhost:3001/health')
+      const response = await fetch('http://localhost:3001/users/mock')
       const data = await response.json()
-      setHealthStatus(`Backend is ${data.status} - ${data.timestamp}`)
+      console.log(data)
+      const message = `Юзер имя: ${data.name || 'N/A'}`
+      setHealthStatus(message)
+      notifications.show({
+        title: 'Success',
+        message: message,
+        color: 'green',
+      })
     } catch (error) {
-      setHealthStatus('Backend is not reachable. Make sure it is running on port 3001.')
+      const errorMessage = 'Backend is not reachable. Make sure it is running on port 3001.'
+      setHealthStatus(errorMessage)
+      notifications.show({
+        title: 'Error',
+        message: errorMessage,
+        color: 'red',
+      })
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <main className="min-h-screen p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8 text-gray-900 dark:text-white">
-          HR Platform
-        </h1>
-        
-        <div className="grid gap-6 md:grid-cols-2">
-          <Card>
-            <h2 className="text-2xl font-semibold mb-4">Welcome</h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
-              This is your HR Platform frontend built with Next.js, TypeScript, and Flowbite.
-            </p>
-            <Button onClick={checkBackend} color="blue" disabled={loading}>
-              {loading ? 'Checking...' : 'Check Backend'}
-            </Button>
-            {healthStatus && (
-              <Alert color={healthStatus.includes('not reachable') ? 'failure' : 'success'} className="mt-4">
-                {healthStatus}
-              </Alert>
-            )}
+    <AuthGuard>
+      <Stack gap="md">
+        <Title order={1}>HR Platform</Title>
+
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: '1rem',
+          }}
+        >
+          <Card shadow="sm" padding="lg" radius="md" withBorder>
+            <Stack gap="md">
+              <Title order={2}>Welcome</Title>
+              <Text c="dimmed">
+                This is your HR Platform frontend built with Next.js, TypeScript, and Mantine.
+              </Text>
+              <Button onClick={checkBackend} loading={loading} fullWidth>
+                Получи мок пользователя
+              </Button>
+              {healthStatus && (
+                <Alert
+                  color={healthStatus.includes('not reachable') ? 'red' : 'green'}
+                  title={healthStatus.includes('not reachable') ? 'Error' : 'Success'}
+                >
+                  {healthStatus}
+                </Alert>
+              )}
+            </Stack>
           </Card>
-          
-          <Card>
-            <h2 className="text-2xl font-semibold mb-4">Features</h2>
-            <ul className="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2">
-              <li>React with TypeScript</li>
-              <li>Next.js 14</li>
-              <li>Flowbite UI Components</li>
-              <li>Tailwind CSS</li>
-            </ul>
+
+          <Card shadow="sm" padding="lg" radius="md" withBorder>
+            <Stack gap="md">
+              <Title order={2}>Features</Title>
+              <List>
+                <List.Item>React with TypeScript</List.Item>
+                <List.Item>Next.js 14</List.Item>
+                <List.Item>Mantine UI Components</List.Item>
+                <List.Item>Tailwind CSS</List.Item>
+              </List>
+            </Stack>
           </Card>
         </div>
-      </div>
-    </main>
+      </Stack>
+    </AuthGuard>
   )
 }
-
