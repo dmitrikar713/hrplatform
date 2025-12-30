@@ -34,7 +34,7 @@ export function SignInForm() {
         message: 'Signed in successfully!',
         color: 'green',
       })
-      router.push('/')
+      router.push('/home')
     } catch (err: any) {
       const errorMessage = err.message || 'Failed to sign in'
       setError(errorMessage)

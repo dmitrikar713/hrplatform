@@ -41,7 +41,7 @@ export function RegisterForm() {
         message: 'Account created and signed in successfully!',
         color: 'green',
       })
-      router.push('/')
+      router.push('/home')
     } catch (err: any) {
       const errorMessage = err.message || 'Failed to register'
       setError(errorMessage)

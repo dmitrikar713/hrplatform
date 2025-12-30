@@ -3,9 +3,9 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/store/authStore'
-import { Splash } from './components/Splash'
+import { Splash } from '../components/Splash'
 
-export default function SplashPage() {
+export default function CatchAllPage() {
   const router = useRouter()
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
   const initialize = useAuthStore((state) => state.initialize)
@@ -31,3 +31,4 @@ export default function SplashPage() {
   // Show splash while checking auth state
   return <Splash />
 }
+
